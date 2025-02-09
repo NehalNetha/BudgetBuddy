@@ -1,15 +1,15 @@
 import SwiftUI
 
-struct AddExpenseView: View {
+struct AddExpenseCalendarView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var expenseTitle = ""
     @State private var expenseAmount = ""
     @State private var selectedCategory = "Food"
     @State private var isAddingNewCategory = false
     @State private var newCategoryName = ""
-    @State private var expenseDate = Date()
+    @ObservedObject var expenseVM: ExpenseViewModel
     @State private var categories = ["Food", "Transport", "Shopping", "Bills", "Entertainment", "Other"]
-    
+    let selectedDate: Date
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
@@ -114,17 +114,11 @@ struct AddExpenseView: View {
                 }
 
                 // Date picker
-                DatePicker("Date", selection: $expenseDate, displayedComponents: .date)
-                   .datePickerStyle(.compact)
-                   .padding()
-                   .background(RoundedRectangle(cornerRadius: 16).fill(Color(hex: "1E1E1E")))
-                   .foregroundStyle(.white)
-                   .padding(.horizontal)
-
               
                 // Add button
                 Button {
                     // Add expense logic here
+                    addExpense()
 
                 } label: {
                     Text("Add Expense")
@@ -146,6 +140,39 @@ struct AddExpenseView: View {
         }
     }
     
-   
+    private func addExpense() {
+            print("Starting addExpense function")
+          print("Title:", expenseTitle)
+          print("Amount string:", expenseAmount)
+        
+          guard let amount = Double(expenseAmount), !expenseTitle.isEmpty else { return }
+          print("Adding expense with title:", expenseTitle)
+          print("Amount:", amount)
+          print("Category:", selectedCategory)
+          print("Selected Date:", selectedDate)
+            
+          
+          // Get icon and color for the category
+          let iconAndColor = expenseVM.getIconAndColor(for: selectedCategory)
+          
+          Task {
+              do {
+                  try await expenseVM.addExpense(
+                      title: expenseTitle,
+                      amount: amount,
+                      category: selectedCategory,
+                      icon: iconAndColor.icon,
+                      color: iconAndColor.color,
+                      date: selectedDate
+                  )
+                  print("Successfully added expense")
+
+                  dismiss()
+              } catch {
+                  print("Error adding expense: \(error)")
+              }
+          }
+    }
+    
     
 }

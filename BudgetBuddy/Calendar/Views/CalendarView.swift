@@ -4,7 +4,7 @@ struct CalendarView: View {
     @State private var increPrevWeek = 0
     @State private var increNextWeek = 0
     @StateObject var calendarTaskViewModel = CalendarViewModel()
-
+    @StateObject private var expenseVM = ExpenseViewModel() 
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack {
@@ -79,7 +79,15 @@ struct CalendarView: View {
                         .disabled(increNextWeek >= 2)
                     }
                     .padding(.horizontal)
+                    
+                  
                 }
+                
+                DailyExpenseView(
+                   date: calendarTaskViewModel.currentDate,
+                   dateFormatter: calendarTaskViewModel.extractDate,
+                   expenseVM: expenseVM
+               )
             }
             .padding(.top, 50) // Add top padding
             Spacer() // Push content to the top

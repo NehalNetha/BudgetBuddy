@@ -46,6 +46,10 @@
 		21EE37682D5900A400732059 /* ExpenseProgressChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE37672D5900A400732059 /* ExpenseProgressChart.swift */; };
 		21EE376A2D5914B200732059 /* MultipleCharts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE37692D5914B200732059 /* MultipleCharts.swift */; };
 		21EE376C2D5914D000732059 /* InsightCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE376B2D5914D000732059 /* InsightCard.swift */; };
+		21EE376F2D59186A00732059 /* DailyExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE376E2D59186A00732059 /* DailyExpenseView.swift */; };
+		21EE37732D59272700732059 /* ExpenseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE37722D59272700732059 /* ExpenseModel.swift */; };
+		21EE37752D59275F00732059 /* ExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE37742D59275F00732059 /* ExpenseViewModel.swift */; };
+		21EE37792D593E0A00732059 /* AddExpenseCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE37782D593E0A00732059 /* AddExpenseCalendarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,7 +68,6 @@
 		21B2BF762D33C35D001C40AF /* IncomeBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeBlock.swift; sourceTree = "<group>"; };
 		21B2BF782D33C815001C40AF /* InsightBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightBlock.swift; sourceTree = "<group>"; };
 		21D9565B2D351A3300E1939D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		21D9565D2D351A7800E1939D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		21EE37482D58AB9800732059 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		21EE374B2D58AC6A00732059 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		21EE374E2D58B2AC00732059 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
@@ -76,6 +79,11 @@
 		21EE37672D5900A400732059 /* ExpenseProgressChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseProgressChart.swift; sourceTree = "<group>"; };
 		21EE37692D5914B200732059 /* MultipleCharts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleCharts.swift; sourceTree = "<group>"; };
 		21EE376B2D5914D000732059 /* InsightCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightCard.swift; sourceTree = "<group>"; };
+		21EE376E2D59186A00732059 /* DailyExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyExpenseView.swift; sourceTree = "<group>"; };
+		21EE37722D59272700732059 /* ExpenseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseModel.swift; sourceTree = "<group>"; };
+		21EE37742D59275F00732059 /* ExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModel.swift; sourceTree = "<group>"; };
+		21EE37762D5938B800732059 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		21EE37782D593E0A00732059 /* AddExpenseCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseCalendarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,13 +154,13 @@
 				21EE37582D58B5D600732059 /* Utilities */,
 				21EE37462D58AB8400732059 /* Calendar */,
 				217491952D3EA6FC00AD25F8 /* Auth */,
-				21D9565D2D351A7800E1939D /* Info.plist */,
 				21B2BF722D33BCBD001C40AF /* Extensions */,
 				21B2BF6F2D33AE9E001C40AF /* Tab */,
 				21B2BF6B2D32F860001C40AF /* Home */,
 				21B2BF5D2D32CE8E001C40AF /* BudgetBuddyApp.swift */,
 				21B2BF5F2D32CE8E001C40AF /* ContentView.swift */,
 				21D9565B2D351A3300E1939D /* GoogleService-Info.plist */,
+				21EE37762D5938B800732059 /* Info.plist */,
 				21B2BF612D32CE91001C40AF /* Assets.xcassets */,
 				21B2BF632D32CE91001C40AF /* Preview Content */,
 			);
@@ -170,6 +178,8 @@
 		21B2BF6B2D32F860001C40AF /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				21EE37712D59219600732059 /* Models */,
+				21EE37702D59218C00732059 /* ExpenseViewModel */,
 				21B2BF6C2D32F865001C40AF /* Views */,
 			);
 			path = Home;
@@ -223,6 +233,7 @@
 		21EE37472D58AB8800732059 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				21EE376D2D59184E00732059 /* Components */,
 				21EE37482D58AB9800732059 /* CalendarView.swift */,
 			);
 			path = Views;
@@ -286,6 +297,31 @@
 				21EE376B2D5914D000732059 /* InsightCard.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		21EE376D2D59184E00732059 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				21EE376E2D59186A00732059 /* DailyExpenseView.swift */,
+				21EE37782D593E0A00732059 /* AddExpenseCalendarView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		21EE37702D59218C00732059 /* ExpenseViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				21EE37742D59275F00732059 /* ExpenseViewModel.swift */,
+			);
+			path = ExpenseViewModel;
+			sourceTree = "<group>";
+		};
+		21EE37712D59219600732059 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				21EE37722D59272700732059 /* ExpenseModel.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -384,12 +420,16 @@
 				21EE37642D58FCB600732059 /* InsightMainView.swift in Sources */,
 				21B2BF6E2D32F885001C40AF /* HomeMainView.swift in Sources */,
 				21EE37492D58AB9800732059 /* CalendarView.swift in Sources */,
+				21EE37792D593E0A00732059 /* AddExpenseCalendarView.swift in Sources */,
 				21EE374C2D58AC6A00732059 /* CalendarViewModel.swift in Sources */,
+				21EE37732D59272700732059 /* ExpenseModel.swift in Sources */,
 				21B2BF602D32CE8E001C40AF /* ContentView.swift in Sources */,
+				21EE376F2D59186A00732059 /* DailyExpenseView.swift in Sources */,
 				217491922D3EA24500AD25F8 /* AddExpenseView.swift in Sources */,
 				21EE37682D5900A400732059 /* ExpenseProgressChart.swift in Sources */,
 				21EE375B2D58B5EE00732059 /* Utilities.swift in Sources */,
 				21B2BF742D33BCD2001C40AF /* HexColor.swift in Sources */,
+				21EE37752D59275F00732059 /* ExpenseViewModel.swift in Sources */,
 				21EE375D2D58B76A00732059 /* InputView.swift in Sources */,
 				21B2BF5E2D32CE8E001C40AF /* BudgetBuddyApp.swift in Sources */,
 				21EE376A2D5914B200732059 /* MultipleCharts.swift in Sources */,

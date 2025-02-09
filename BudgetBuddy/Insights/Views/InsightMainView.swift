@@ -10,19 +10,40 @@ import Charts
 
 struct InsightMainView: View {
     @State private var selectedTab = 0
+    @Namespace private var animation
     
     var body: some View {
         VStack(spacing: 0) {
-            // Segmented Picker
-            Picker("Insight Type", selection: $selectedTab) {
-                Text("Charts").tag(0)
-                Text("AI Insights").tag(1)
+            // Segmented Picker with custom style
+            HStack {
+                ForEach(0..<2) { tab in
+                    Button {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            selectedTab = tab
+                        }
+                    } label: {
+                        VStack {
+                            Text(tab == 0 ? "Charts" : "AI Insights")
+                                .font(.system(size: 16))
+                                .foregroundStyle(selectedTab == tab ? .white : .gray)
+                            
+                            if selectedTab == tab {
+                                Rectangle()
+                                    .fill(Color.white)
+                                    .frame(height: 2)
+                                    .matchedGeometryEffect(id: "TAB", in: animation)
+                            }
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                }
             }
-            .pickerStyle(.segmented)
             .padding()
             .background(Color(hex: "191919"))
             
-            if selectedTab == 0 {
+            // Content with transition
+            TabView(selection: $selectedTab) {
+                // Charts View
                 ScrollView {
                     VStack(spacing: 20) {
                         // Spending Trends
@@ -51,7 +72,8 @@ struct InsightMainView: View {
                     }
                     .padding(.top, 20)
                 }
-            } else {
+                .tag(0)
+                
                 // AI Insights View
                 ScrollView {
                     VStack(alignment: .leading, spacing: 15) {
@@ -62,7 +84,10 @@ struct InsightMainView: View {
                     .padding(.top, 20)
                     .padding(.horizontal)
                 }
+                .tag(1)
             }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .animation(.easeInOut(duration: 0.3), value: selectedTab)
         }
         .background(Color.black)
     }

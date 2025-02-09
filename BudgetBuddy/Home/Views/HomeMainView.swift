@@ -32,6 +32,7 @@ struct HomeMainView: View {
     ]
     @State private var showAddExpense = false
     @State private var showAddIncome = false
+    @StateObject private var expenseVM = ExpenseViewModel()
 
 
 
@@ -79,13 +80,15 @@ struct HomeMainView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black)
         .ignoresSafeArea(.all)
-        .sheet(isPresented: $showAddExpense) {
-            AddExpenseView()
-                .presentationDetents([.medium])
-        }
+        
         .sheet(isPresented: $showAddIncome) {
             AddIncomeView()
                 .presentationDetents([.medium])
+        }
+        .sheet(isPresented: $showAddExpense){
+            AddExpenseView()
+                .presentationDetents([.medium])
+
         }
         
     }
