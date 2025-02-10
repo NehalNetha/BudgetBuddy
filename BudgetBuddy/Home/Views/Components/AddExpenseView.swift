@@ -9,7 +9,8 @@ struct AddExpenseView: View {
     @State private var newCategoryName = ""
     @State private var expenseDate = Date()
     @State private var categories = ["Food", "Transport", "Shopping", "Bills", "Entertainment", "Other"]
-    
+    @ObservedObject var expenseVM: ExpenseViewModel
+
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
@@ -125,7 +126,7 @@ struct AddExpenseView: View {
                 // Add button
                 Button {
                     // Add expense logic here
-
+                    addExpense()
                 } label: {
                     Text("Add Expense")
                         .font(.headline)
@@ -144,6 +145,35 @@ struct AddExpenseView: View {
             .background(Color(hex: "191919"))
            
         }
+    }
+    
+    private func addExpense() {
+          
+        
+          guard let amount = Double(expenseAmount), !expenseTitle.isEmpty else { return }
+       
+            
+          
+          // Get icon and color for the category
+          let iconAndColor = expenseVM.getIconAndColor(for: selectedCategory)
+          
+          Task {
+              do {
+                  try await expenseVM.addExpense(
+                      title: expenseTitle,
+                      amount: amount,
+                      category: selectedCategory,
+                      icon: iconAndColor.icon,
+                      color: iconAndColor.color,
+                      date: expenseDate
+                  )
+                  print("Successfully added expense")
+
+                  dismiss()
+              } catch {
+                  print("Error adding expense: \(error)")
+              }
+          }
     }
     
    

@@ -17,13 +17,16 @@ class ExpenseViewModel: ObservableObject {
     @Published var dailyExpenses: [Expense] = []
     @Published var isLoading = false
     @Published var error: Error?
-    
+    @Published var recentExpenses: [Expense] = []
+    @Published var expensesByMonth: [String: [Expense]] = [:]
+
     private let db = Firestore.firestore()
     
     private var userId: String? {
            Auth.auth().currentUser?.uid
     }
        
+    
     
     // Add new expense
     func addExpense(title: String, amount: Double, category: String, icon: String, color: String, date: Date) async throws {
@@ -56,6 +59,7 @@ class ExpenseViewModel: ObservableObject {
            let docRef = try await db.collection("expenses").addDocument(data: data)
            print("Successfully added document with ID:", docRef.documentID)
            try await fetchDailyExpenses(for: date)
+           try await fetchRecentExpenses()
            print("Successfully fetched updated daily expenses")
        } catch {
            print("Error adding document:", error)
@@ -94,6 +98,62 @@ class ExpenseViewModel: ObservableObject {
         }
     }
     
+    func fetchRecentExpenses() async throws {
+        guard let userId = userId else {
+            throw NSError(domain: "ExpenseError", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])
+        }
+        
+        isLoading = true
+        defer { isLoading = false }
+        
+        let snapshot = try await db.collection("expenses")
+            .whereField("userId", isEqualTo: userId)
+            .order(by: "date", descending: true)
+            .limit(to: 10)
+            .getDocuments()
+        
+        recentExpenses = snapshot.documents.compactMap { document in
+            try? document.data(as: Expense.self)
+        }
+    }
+    
+    // Add this property
+    func fetchAllExpenses() async throws -> [Expense] {
+        guard let userId = userId else {
+            throw NSError(domain: "ExpenseError", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])
+        }
+        
+        isLoading = true
+        defer { isLoading = false }
+        
+        let snapshot = try await db.collection("expenses")
+            .whereField("userId", isEqualTo: userId)
+            .order(by: "date", descending: true)
+            .getDocuments()
+        
+        return snapshot.documents.compactMap { document in
+            try? document.data(as: Expense.self)
+        }
+    }
+
+    // Add this method
+    func fetchAllExpensesGroupedByMonth() async throws {
+        let allExpenses = try await fetchAllExpenses()
+        let calendar = Calendar.current
+        
+        // Group expenses by month
+        expensesByMonth = Dictionary(grouping: allExpenses) { expense in
+            let date = expense.date
+            let components = calendar.dateComponents([.year, .month], from: date)
+            let monthDate = calendar.date(from: components)!
+            return monthDate.formatted(.dateTime.year().month())
+        }
+    }
+
+    func calculateMonthlyTotal(for expenses: [Expense]) -> Double {
+        expenses.reduce(0) { $0 + $1.amount }
+    }
+    
     // Calculate total expenses for a specific date
     func calculateDailyTotal() -> Double {
         dailyExpenses.reduce(0) { $0 + $1.amount }
@@ -110,6 +170,18 @@ class ExpenseViewModel: ObservableObject {
         let data = try encoder.encode(expense)
         try await db.collection("expenses").document(expenseId).setData(data)
     }
+    
+    func removeExpenseLocally(_ id: String, from month: String) {
+            if var monthExpenses = expensesByMonth[month] {
+                monthExpenses.removeAll { $0.id == id }
+                expensesByMonth[month] = monthExpenses
+                
+                // If month becomes empty, remove it
+                if monthExpenses.isEmpty {
+                    expensesByMonth.removeValue(forKey: month)
+                }
+            }
+        }
     
     // Helper method to get icon and color for category
     func getIconAndColor(for category: String) -> (icon: String, color: String) {

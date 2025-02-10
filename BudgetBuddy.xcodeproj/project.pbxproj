@@ -50,6 +50,8 @@
 		21EE37732D59272700732059 /* ExpenseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE37722D59272700732059 /* ExpenseModel.swift */; };
 		21EE37752D59275F00732059 /* ExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE37742D59275F00732059 /* ExpenseViewModel.swift */; };
 		21EE37792D593E0A00732059 /* AddExpenseCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE37782D593E0A00732059 /* AddExpenseCalendarView.swift */; };
+		21EE377B2D59581300732059 /* RecentExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE377A2D59581300732059 /* RecentExpensesView.swift */; };
+		21F99FFD2D59E71B00E3FAEC /* BalanceSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F99FFC2D59E71B00E3FAEC /* BalanceSheetView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +86,8 @@
 		21EE37742D59275F00732059 /* ExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModel.swift; sourceTree = "<group>"; };
 		21EE37762D5938B800732059 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21EE37782D593E0A00732059 /* AddExpenseCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseCalendarView.swift; sourceTree = "<group>"; };
+		21EE377A2D59581300732059 /* RecentExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentExpensesView.swift; sourceTree = "<group>"; };
+		21F99FFC2D59E71B00E3FAEC /* BalanceSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceSheetView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,6 +221,8 @@
 				21B2BF782D33C815001C40AF /* InsightBlock.swift */,
 				217491912D3EA24500AD25F8 /* AddExpenseView.swift */,
 				217491932D3EA53900AD25F8 /* AddIncomeView.swift */,
+				21EE377A2D59581300732059 /* RecentExpensesView.swift */,
+				21F99FFC2D59E71B00E3FAEC /* BalanceSheetView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -418,6 +424,7 @@
 				21B2BF772D33C35D001C40AF /* IncomeBlock.swift in Sources */,
 				21EE37662D58FD1F00732059 /* BarChartView.swift in Sources */,
 				21EE37642D58FCB600732059 /* InsightMainView.swift in Sources */,
+				21F99FFD2D59E71B00E3FAEC /* BalanceSheetView.swift in Sources */,
 				21B2BF6E2D32F885001C40AF /* HomeMainView.swift in Sources */,
 				21EE37492D58AB9800732059 /* CalendarView.swift in Sources */,
 				21EE37792D593E0A00732059 /* AddExpenseCalendarView.swift in Sources */,
@@ -426,6 +433,7 @@
 				21B2BF602D32CE8E001C40AF /* ContentView.swift in Sources */,
 				21EE376F2D59186A00732059 /* DailyExpenseView.swift in Sources */,
 				217491922D3EA24500AD25F8 /* AddExpenseView.swift in Sources */,
+				21EE377B2D59581300732059 /* RecentExpensesView.swift in Sources */,
 				21EE37682D5900A400732059 /* ExpenseProgressChart.swift in Sources */,
 				21EE375B2D58B5EE00732059 /* Utilities.swift in Sources */,
 				21B2BF742D33BCD2001C40AF /* HexColor.swift in Sources */,
@@ -574,6 +582,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"BudgetBuddy/Preview Content\"";
+				DEVELOPMENT_TEAM = 6VBVPZS8VD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BudgetBuddy/Info.plist;
@@ -603,6 +612,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"BudgetBuddy/Preview Content\"";
+				DEVELOPMENT_TEAM = 6VBVPZS8VD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BudgetBuddy/Info.plist;

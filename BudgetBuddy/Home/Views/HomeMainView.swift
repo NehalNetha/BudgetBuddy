@@ -34,11 +34,13 @@ struct HomeMainView: View {
     @State private var showAddIncome = false
     @StateObject private var expenseVM = ExpenseViewModel()
 
-
+    @State private var showBalanceSheet = false
 
     var body: some View {
-        ScrollView(.vertical){
-            
+        
+        NavigationStack {
+            ScrollView(.vertical){
+                
                 VStack {
                     Navbar()
                         .padding(.horizontal)
@@ -51,7 +53,7 @@ struct HomeMainView: View {
                     BudgetLeft()
                     
                     
-                    ScrollExpenseBlocks()
+                    RecentExpensesView(expenseVM: expenseVM, showAddExpense: $showAddExpense)
                         .padding(.top)
                     
                 }
@@ -60,8 +62,8 @@ struct HomeMainView: View {
                 .background(
                     Color(hex: "191919")
                 )
-            
-            
+                
+                
                 HorizontalIncomeSection()
                 
                 VStack{
@@ -76,22 +78,25 @@ struct HomeMainView: View {
                     
                     InsightsScrollView()
                 }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.black)
+            .ignoresSafeArea(.all)
+            
+            .sheet(isPresented: $showAddIncome) {
+                AddIncomeView()
+                    .presentationDetents([.medium])
+            }
+            .sheet(isPresented: $showAddExpense){
+                AddExpenseView(expenseVM: expenseVM)
+                    .presentationDetents([.medium])
+                
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black)
-        .ignoresSafeArea(.all)
-        
-        .sheet(isPresented: $showAddIncome) {
-            AddIncomeView()
-                .presentationDetents([.medium])
-        }
-        .sheet(isPresented: $showAddExpense){
-            AddExpenseView()
-                .presentationDetents([.medium])
+        .preferredColorScheme(.dark)
 
-        }
-        
     }
+
 }
 
 extension HomeMainView {
@@ -112,7 +117,7 @@ extension HomeMainView {
             Spacer()
 
             Button {
-
+                showBalanceSheet = true
             } label: {
                 HStack {
                     Circle()
@@ -130,6 +135,9 @@ extension HomeMainView {
                 )
             }
 
+        }
+        .navigationDestination(isPresented: $showBalanceSheet) {
+            BalanceSheetView(expenseVM: expenseVM)
         }
     }
 
@@ -181,66 +189,11 @@ extension HomeMainView {
         .padding(.horizontal)
     }
 
-    func PriceBlock(title: String, money: String, tag: String, color: String) -> some View {
-
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.system(size: 18))
-                .fontWeight(.medium)
-            Text(money)
-                .font(.system(size: 14))
-            Text(tag)
-                .font(.system(size: 10))
-                .padding(.horizontal, 12)
-                .padding(.vertical, 2)
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(.black)
-                        .opacity(0.21)
-
-                )
-        }
-        .foregroundStyle(.white)
-        .padding(.leading, 16)
-        .padding(.trailing, 25)
-        .padding(.vertical, 12)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(hex: color))
-
-        )
+    
+    
+    
+    
         
-    }
-    
-    
-    func ScrollExpenseBlocks() -> some View{
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 15) {
-                Button {
-                    showAddExpense = true
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.system(size: 18))
-                        .foregroundStyle(.white)
-                        .padding(12)
-                        .padding(.vertical, 28)
-                }
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(Color(hex: "2D2D2D"))
-
-                )
-
-                PriceBlock(title: "Lunch", money: "200$", tag: "food", color: "037D4F")
-                PriceBlock(title: "Lunch", money: "200$", tag: "food", color: "FF8E8E")
-
-            }
-            .padding(.horizontal)
-            .padding(.bottom, 45)
-            .padding(.top)
-        }
-    }
-    
     func HorizontalIncomeSection() -> some View {
        
             VStack(alignment: .leading) {

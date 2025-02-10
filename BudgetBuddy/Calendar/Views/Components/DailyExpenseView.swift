@@ -72,18 +72,59 @@ struct DailyExpenseView: View {
             
             // Expense List
             
-            VStack(spacing: 15) {
-               if expenseVM.isLoading {
-                   ProgressView()
-               } else {
-                   ForEach(expenseVM.dailyExpenses) { expense in
-                       DailyExpenseRow(expense: expense)
-                           .background(Color(hex: "191919"))
-                           .cornerRadius(16)
-                   }
-               }
+           
+//        VStack(spacing: 15) {
+//             if expenseVM.isLoading {
+//                 ProgressView()
+//             } else {
+//                 ForEach(expenseVM.dailyExpenses) { expense in
+//                     DailyExpenseRow(expense: expense)
+//                         .background(Color(hex: "191919"))
+//                         .cornerRadius(16)
+//                 }
+//             }
+//          }
+//          .padding(.horizontal)
+            
+            List {
+                if expenseVM.isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .listRowBackground(Color.clear)
+                } else {
+                    ForEach(expenseVM.dailyExpenses) { expense in
+                        DailyExpenseRow(expense: expense)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button(role: .destructive) {
+                                    Task {
+                                        if let id = expense.id {
+                                            do {
+                                                try await expenseVM.deleteExpense(id)
+                                                try await expenseVM.fetchDailyExpenses(for: date)
+                                            } catch {
+                                                print("Error deleting expense: \(error)")
+                                            }
+                                        }
+                                    }
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                                .tint(.red)
+                            }
+                            .listRowBackground(Color.clear)
+                            .listRowInsets(EdgeInsets())
+                            .listRowSeparator(.hidden)
+                            .background(Color(hex: "191919"))
+                            .cornerRadius(16)
+                            .padding(.bottom, 8)
+                    }
+                }
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
             .padding(.horizontal)
+
+            .frame(height: UIScreen.main.bounds.height * 0.6)
         }
         .padding(.vertical, 25)
         .task {
