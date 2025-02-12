@@ -26,17 +26,10 @@ struct MainTabView: View {
                 .tabItem {
                     Label("Profile", systemImage: "lightbulb.min")
                 }
-            VStack{
-                Button{
-                    authViewModel.signOut()
-
-                }label: {
-                    Text("Sign Out")
+            Settings()
+                .tabItem {
+                    Label("Profile", systemImage: "person.crop.circle")
                 }
-            }
-            .tabItem {
-                Label("Profile", systemImage: "person.crop.circle")
-            }
         }
         .tint(.green) // Set active tab color to green
     }

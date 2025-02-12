@@ -10,7 +10,6 @@ import Firebase
 import FirebaseFirestore
 import FirebaseAuth
 
-
 @MainActor
 class ExpenseViewModel: ObservableObject {
     @Published var expenses: [Expense] = []
@@ -164,11 +163,42 @@ class ExpenseViewModel: ObservableObject {
         try await db.collection("expenses").document(expenseId).delete()
     }
 
-    func updateExpense(_ expense: Expense) async throws {
-        guard let expenseId = expense.id else { return }
+    // Update the updateExpense method
+    func updateExpense(id: String, title: String, amount: Double, category: String, icon: String, color: String, date: Date) async throws {
+        guard let userId = userId else {
+            throw NSError(domain: "ExpenseError", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])
+        }
+        
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "hh:mm a"
+        
+        let updatedExpense = Expense(
+            id: id,
+            title: title,
+            amount: amount,
+            category: category,
+            date: date,
+            time: timeFormatter.string(from: date),
+            icon: icon,
+            color: color,
+            userId: userId
+        )
+        
         let encoder = Firestore.Encoder()
-        let data = try encoder.encode(expense)
-        try await db.collection("expenses").document(expenseId).setData(data)
+        let data = try encoder.encode(updatedExpense)
+        
+        do {
+            try await db.collection("expenses").document(id).setData(data)
+            print("Successfully updated expense with ID:", id)
+            
+            // Refresh the expenses lists
+            try await fetchDailyExpenses(for: date)
+            try await fetchRecentExpenses()
+            try await fetchAllExpensesGroupedByMonth()
+        } catch {
+            print("Error updating expense:", error)
+            throw error
+        }
     }
     
     func removeExpenseLocally(_ id: String, from month: String) {
@@ -182,6 +212,10 @@ class ExpenseViewModel: ObservableObject {
                 }
             }
         }
+    
+      
+      // Add new function to manage budgets
+
     
     // Helper method to get icon and color for category
     func getIconAndColor(for category: String) -> (icon: String, color: String) {

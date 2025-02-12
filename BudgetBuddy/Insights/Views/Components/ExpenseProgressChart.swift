@@ -9,24 +9,79 @@ struct ExpenseCategory: Identifiable {
 }
 
 struct ExpenseProgressChart: View {
+    let expenses: [Expense] // Add this line
     @State private var selectedCategory: ExpenseCategory?
     @State private var showDetails = false
     @State private var selectedPeriod: TimePeriod = .week
     @State private var showBreakdown = false
+    
+    // Remove the hardcoded categories array
+    
+    var filteredExpenses: [Expense] {
+        let calendar = Calendar.current
+        let today = Date()
+        
+        switch selectedPeriod {
+        case .week:
+            let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: today))!
+            return expenses.filter { expense in
+                calendar.isDate(expense.date, equalTo: weekStart, toGranularity: .weekOfYear)
+            }
+        case .month:
+            let month = calendar.component(.month, from: today)
+            let year = calendar.component(.year, from: today)
+            return expenses.filter { expense in
+                let expenseMonth = calendar.component(.month, from: expense.date)
+                let expenseYear = calendar.component(.year, from: expense.date)
+                return expenseMonth == month && expenseYear == year
+            }
+        case .year:
+            let year = calendar.component(.year, from: today)
+            return expenses.filter { expense in
+                calendar.component(.year, from: expense.date) == year
+            }
+        }
+    }
+    
+    var categories: [ExpenseCategory] {
+        let categoryGroups = Dictionary(grouping: filteredExpenses) { $0.category }
+        
+        let categoryTotals = categoryGroups.map { (category, expenses) in
+            let total = expenses.reduce(0) { $0 + $1.amount }
+            let (icon, colorHex) = getIconAndColorForCategory(category)
+            return ExpenseCategory(
+                name: category,
+                amount: total,
+                color: Color(hex: colorHex),
+                code: icon
+            )
+        }
+        
+        return categoryTotals.sorted { $0.amount > $1.amount }
+    }
+    
+    private func getIconAndColorForCategory(_ category: String) -> (icon: String, color: String) {
+        switch category {
+        case "Food":
+            return ("fork.knife", "FF8E8E")
+        case "Transport":
+            return ("car.fill", "60A5FA")
+        case "Shopping":
+            return ("cart.fill", "8B5CF6")
+        case "Bills":
+            return ("doc.text.fill", "F59E0B")
+        case "Entertainment":
+            return ("tv.fill", "10B981")
+        default:
+            return ("creditcard.fill", "6B7280")
+        }
+    }
     
     enum TimePeriod: String, CaseIterable {
         case week = "This Week"
         case month = "This Month"
         case year = "This Year"
     }
-    
-    let categories: [ExpenseCategory] = [
-        ExpenseCategory(name: "Housing", amount: 1815.67, color: Color(hex: "8B5CF6"), code: "B07MCGRV7M"),
-        ExpenseCategory(name: "Food", amount: 450.00, color: Color(hex: "EC4899"), code: "F12MHTRP9N"),
-        ExpenseCategory(name: "Transport", amount: 320.33, color: Color(hex: "FCD34D"), code: "T98KPLQW3X"),
-        ExpenseCategory(name: "Entertainment", amount: 250.00, color: Color(hex: "60A5FA"), code: "E45NVBST2Y"),
-        ExpenseCategory(name: "Others", amount: 149.00, color: Color(hex: "34D399"), code: "O23WXUHY7Z")
-    ]
     
     var totalSpend: Double {
         categories.reduce(0) { $0 + $1.amount }
@@ -40,6 +95,8 @@ struct ExpenseProgressChart: View {
                     Button(action: {
                         withAnimation {
                             selectedPeriod = period
+                            selectedCategory = nil  // Reset selected category
+                            showDetails = false     // Reset details view
                         }
                     }) {
                         Text(period.rawValue)
@@ -53,56 +110,24 @@ struct ExpenseProgressChart: View {
             VStack(alignment: .leading, spacing: 20) {
                 // Progress Chart
                 ZStack {
+                    // Background Circle
                     Circle()
                         .trim(from: 0, to: 0.8)
                         .stroke(Color(hex: "1E1E1E"), lineWidth: 30)
                         .frame(height: 200)
                         .rotationEffect(.degrees(120))
                     
-                    ForEach(Array(zip(categories.indices, categories)), id: \.0) { index, category in
-                        let startAngle = Double(index) * (0.8 / Double(categories.count))
-                        let endAngle = Double(index + 1) * (0.8 / Double(categories.count))
-                        
-                        Circle()
-                            .trim(from: startAngle, to: endAngle)
-                            .stroke(category.color, lineWidth: selectedCategory?.id == category.id ? 35 : 30)
-                            .frame(height: 200)
-                            .rotationEffect(.degrees(120))
-                            .onTapGesture {
-                                withAnimation(.spring()) {
-                                    selectedCategory = selectedCategory?.id == category.id ? nil : category
-                                    showDetails = true
-                                }
-                            }
-                    }
+                    // Category Segments
+                    CategorySegments(categories: categories, selectedCategory: $selectedCategory, showDetails: $showDetails)
                     
-                    // Default Center Value or Selected Category Details
-                    VStack(spacing: 4) {
-                        if let selected = selectedCategory {
-                            Text("$\(String(format: "%.2f", selected.amount))")
-                                .font(.system(size: 24, weight: .bold))
-                                .foregroundStyle(.white)
-                            Text(selected.code)
-                                .font(.caption)
-                                .foregroundStyle(.gray)
-                        } else {
-                            Text("$\(String(format: "%.2f", totalSpend))")
-                                .font(.system(size: 24, weight: .bold))
-                                .foregroundStyle(.white)
-                            Text("Total Spend")
-                                .font(.caption)
-                                .foregroundStyle(.gray)
-                        }
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 12)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color(hex: "1E1E1E"))
-                    )
+                    // Center Display
+                    CenterDisplay(selectedCategory: selectedCategory, totalSpend: totalSpend)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 20)
+                
+                // Default Center Value or Selected Category Details
+               
                 
                 // Category Breakdown
                 if showBreakdown {
@@ -156,6 +181,66 @@ struct ExpenseProgressChart: View {
     }
 }
 
-#Preview {
-    ExpenseProgressChart()
+// Add these new structures
+private struct CategorySegments: View {
+    let categories: [ExpenseCategory]
+    @Binding var selectedCategory: ExpenseCategory?
+    @Binding var showDetails: Bool
+    
+    var body: some View {
+        ForEach(Array(zip(categories.indices, categories)), id: \.0) { index, category in
+            let startAngle = Double(index) * (0.8 / Double(categories.count))
+            let endAngle = Double(index + 1) * (0.8 / Double(categories.count))
+            
+            Circle()
+                .trim(from: startAngle, to: endAngle)
+                .stroke(category.color, lineWidth: selectedCategory?.id == category.id ? 35 : 30)
+                .frame(height: 200)
+                .rotationEffect(.degrees(120))
+                .onTapGesture {
+                    withAnimation(.spring()) {
+                        selectedCategory = selectedCategory?.id == category.id ? nil : category
+                        showDetails = true
+                    }
+                }
+        }
+    }
 }
+
+private struct CenterDisplay: View {
+    let selectedCategory: ExpenseCategory?
+    let totalSpend: Double
+    
+    var body: some View {
+        VStack(spacing: 4) {
+            if let selected = selectedCategory {
+                Text("$\(String(format: "%.2f", selected.amount))")
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundStyle(.white)
+                
+                HStack {
+                    Image(systemName: selected.code)
+                        .font(.system(size: 16))
+                        .foregroundStyle(.white)
+                    Text(selected.name)
+                        .font(.caption)
+                        .foregroundStyle(.gray)
+                }
+            } else {
+                Text("$\(String(format: "%.2f", totalSpend))")
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundStyle(.white)
+                Text("Total Spend")
+                    .font(.caption)
+                    .foregroundStyle(.gray)
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(hex: "1E1E1E"))
+        )
+    }
+}
+

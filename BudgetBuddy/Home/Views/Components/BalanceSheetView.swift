@@ -5,98 +5,19 @@ import SwiftUI
 struct BalanceSheetView: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject var expenseVM: ExpenseViewModel
+    @StateObject private var budgetVM = BudgetSettingsViewModel()
     
     var body: some View {
         NavigationStack {
             Group {
                 if expenseVM.isLoading {
-                    VStack {
-                        Spacer()
-                        ProgressView()
-                            .tint(.white)
-                        Spacer()
-                    }
+                    LoadingView()
                 } else {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 24) {
-                            // Balance Amount
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("$8,822.89")
-                                    .font(.system(size: 40, weight: .bold))
-                                    .foregroundStyle(.white)
-                                
-                                HStack(spacing: 4) {
-                                    Image(systemName: "arrow.up.right")
-                                        .foregroundStyle(.green)
-                                    Text("+08%")
-                                        .font(.system(size: 14))
-                                        .foregroundStyle(.green)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(Color.green.opacity(0.2))
-                                        .cornerRadius(8)
-                                }
-                            }
-                            
-                            // Monthly Sections
-                            ForEach(Array(expenseVM.expensesByMonth.keys.sorted().reversed()), id: \.self) { month in
-                                VStack(alignment: .leading, spacing: 16) {
-                                    // Month Header
-                                    HStack {
-                                        Text(month)
-                                            .font(.system(size: 16))
-                                            .foregroundStyle(.white)
-                                        
-                                        Spacer()
-                                        
-                                        Text("$\(String(format: "%.2f", expenseVM.calculateMonthlyTotal(for: expenseVM.expensesByMonth[month] ?? [])))")
-                                            .font(.system(size: 16))
-                                            .foregroundStyle(.white)
-                                    }
-                                    
-//                                    // Month's Expenses
-//                                    LazyVStack(spacing: 16) {
-//                                        ForEach(expenseVM.expensesByMonth[month] ?? []) { expense in
-//                                            ExpenseRowView(expense: expense)
-//                                                .background(Color(hex: "191919"))
-//                                                .cornerRadius(12)
-//                                        }
-//                                    }
-                                    List {
-                                        ForEach(expenseVM.expensesByMonth[month] ?? []) { expense in
-                                            ExpenseRowView(expense: expense)
-                                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                                    Button(role: .destructive) {
-                                                        Task {
-                                                            if let id = expense.id {
-                                                               do {
-                                                                   expenseVM.removeExpenseLocally(id, from: month)
-                                                                   try await expenseVM.deleteExpense(id)
-                                                               } catch {
-                                                                   print("Error deleting expense: \(error)")
-                                                                   try? await expenseVM.fetchAllExpensesGroupedByMonth()
-                                                               }
-                                                           }
-                                                        }
-                                                    } label: {
-                                                        Label("Delete", systemImage: "trash")
-                                                    }
-                                                    .tint(.red)
-                                                }
-                                                .listRowBackground(Color.clear)
-                                                .listRowInsets(EdgeInsets())
-                                                .listRowSeparator(.hidden)
-                                                .background(Color(hex: "191919"))
-                                                .cornerRadius(16)
-                                                .padding(.bottom, 8)
-                                        }
-                                    }
-                                    .listStyle(.plain)
-                                    .scrollContentBackground(.hidden)
-                                    .frame(height: UIScreen.main.bounds.height * 0.6)
-                                }
-                                .padding(.bottom, 20)
-                            }
+                            BalanceHeaderView(budgetVM: budgetVM)
+                            SpendingProgressView(expenseVM: expenseVM, budgetVM: budgetVM)
+                            MonthlyExpensesListView(expenseVM: expenseVM)
                         }
                         .padding(24)
                     }
@@ -110,6 +31,7 @@ struct BalanceSheetView: View {
         .task {
             do {
                 try await expenseVM.fetchAllExpensesGroupedByMonth()
+                try await budgetVM.fetchBudgetSettings()
             } catch {
                 print("Error fetching expenses: \(error)")
             }
@@ -117,6 +39,242 @@ struct BalanceSheetView: View {
     }
 }
 
+// Loading View
+struct LoadingView: View {
+    var body: some View {
+        VStack {
+            Spacer()
+            ProgressView()
+                .tint(.white)
+            Spacer()
+        }
+    }
+}
+
+// Balance Header View
+struct BalanceHeaderView: View {
+    @ObservedObject var budgetVM: BudgetSettingsViewModel
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let settings = budgetVM.budgetSettings {
+                Text("$\(String(format: "%.2f", settings.monthlyBudget))")
+                    .font(.system(size: 40, weight: .bold))
+                    .foregroundStyle(.white)
+            }
+            
+            HStack(spacing: 4) {
+                Image(systemName: "arrow.up.right")
+                    .foregroundStyle(.green)
+                Text("+08%")
+                    .font(.system(size: 14))
+                    .foregroundStyle(.green)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color.green.opacity(0.2))
+                    .cornerRadius(8)
+            }
+        }
+    }
+}
+
+// Spending Progress View
+struct SpendingProgressView: View {
+    @ObservedObject var expenseVM: ExpenseViewModel
+    @ObservedObject var budgetVM: BudgetSettingsViewModel
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Spending \(Date().formatted(.dateTime.month()))")
+                .font(.headline)
+                .foregroundStyle(.white)
+            
+            if let settings = budgetVM.budgetSettings {
+                SpendingDetailsView(expenseVM: expenseVM, settings: settings)
+            }
+        }
+        .padding()
+        .background(Color(hex: "191919"))
+        .cornerRadius(16)
+    }
+}
+
+// Spending Details View
+struct SpendingDetailsView: View {
+    @ObservedObject var expenseVM: ExpenseViewModel
+    let settings: BudgetSettings
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            let monthlyTotal = expenseVM.calculateMonthlyTotal(for: expenseVM.expensesByMonth[Date().formatted(.dateTime.year().month())] ?? [])
+            
+            Text("$\(String(format: "%.2f", monthlyTotal))")
+                .font(.system(size: 20, weight: .bold))
+                .foregroundStyle(.white)
+            
+            CategoryProgressBarsView(expenseVM: expenseVM, settings: settings)
+            CategoryLegendView(expenseVM: expenseVM, settings: settings)
+        }
+    }
+}
+
+// Category Progress Bars View
+struct CategoryProgressBarsView: View {
+    @ObservedObject var expenseVM: ExpenseViewModel
+    let settings: BudgetSettings
+    
+    var body: some View {
+        HStack(spacing: 2) {
+            ForEach(settings.categoryBudgets) { budget in
+                let expenses = (expenseVM.expensesByMonth[Date().formatted(.dateTime.year().month())] ?? [])
+                    .filter { $0.category == budget.category }
+                let spent = expenses.reduce(0) { $0 + $1.amount }
+                let width = (spent / settings.monthlyBudget) * 100
+                
+                Rectangle()
+                    .fill(Color(hex: budget.color))
+                    .frame(width: max(0, min(width, 100)) * 3, height: 8)
+                    .cornerRadius(4)
+            }
+            
+            Rectangle()
+                .fill(Color(hex: "1E1E1E"))
+                .frame(height: 8)
+                .cornerRadius(4)
+        }
+    }
+}
+
+// Category Legend View
+struct CategoryLegendView: View {
+    @ObservedObject var expenseVM: ExpenseViewModel
+    let settings: BudgetSettings
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            ForEach(settings.categoryBudgets) { budget in
+                CategoryLegendItemView(expenseVM: expenseVM, budget: budget)
+            }
+        }
+        .padding(.top, 8)
+    }
+}
+
+// Category Legend Item View
+struct CategoryLegendItemView: View {
+    @ObservedObject var expenseVM: ExpenseViewModel
+    let budget: CategoryBudget
+    
+    var body: some View {
+        let expenses = (expenseVM.expensesByMonth[Date().formatted(.dateTime.year().month())] ?? [])
+            .filter { $0.category == budget.category }
+        let spent = expenses.reduce(0) { $0 + $1.amount }
+        
+        HStack {
+            Circle()
+                .fill(Color(hex: budget.color))
+                .frame(width: 8, height: 8)
+            Text(budget.category)
+                .font(.caption)
+                .foregroundStyle(.gray)
+            Spacer()
+            Text("$\(String(format: "%.2f", spent)) / $\(String(format: "%.2f", budget.amount))")
+                .font(.caption)
+                .foregroundStyle(.white)
+        }
+    }
+}
+
+// Monthly Expenses List View
+struct MonthlyExpensesListView: View {
+    @ObservedObject var expenseVM: ExpenseViewModel
+    
+    var body: some View {
+        ForEach(Array(expenseVM.expensesByMonth.keys.sorted().reversed()), id: \.self) { month in
+            MonthlyExpenseSectionView(month: month, expenseVM: expenseVM)
+        }
+    }
+}
+
+// Monthly Expense Section View
+struct MonthlyExpenseSectionView: View {
+    let month: String
+    @ObservedObject var expenseVM: ExpenseViewModel
+    @State private var selectedExpense: Expense?
+    @State private var showEditSheet = false
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            MonthHeaderView(month: month, expenseVM: expenseVM)
+            
+            LazyVStack(spacing: 16) {
+                ForEach(expenseVM.expensesByMonth[month] ?? []) { expense in
+                    ExpenseRowView(expense: expense)
+                        .background(Color(hex: "191919"))
+                        .cornerRadius(16)
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                deleteExpense(expense, from: month)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                            
+                            Button {
+                                selectedExpense = expense
+                                showEditSheet = true
+                            } label: {
+                                Label("Edit", systemImage: "pencil")
+                            }
+                        }
+                }
+            }
+        }
+        .padding(.bottom, 20)
+        .sheet(isPresented: $showEditSheet) {
+            if let expense = selectedExpense {
+                EditExpenseView(expenseVM: expenseVM, expense: expense, date: expense.date)
+                    .presentationDetents([.medium])
+
+            }
+        }
+    }
+    
+    private func deleteExpense(_ expense: Expense, from month: String) {
+        Task {
+            if let id = expense.id {
+                do {
+                    expenseVM.removeExpenseLocally(id, from: month)
+                    try await expenseVM.deleteExpense(id)
+                } catch {
+                    print("Error deleting expense: \(error)")
+                    try? await expenseVM.fetchAllExpensesGroupedByMonth()
+                }
+            }
+        }
+    }
+}
+
+// Month Header View
+struct MonthHeaderView: View {
+    let month: String
+    @ObservedObject var expenseVM: ExpenseViewModel
+    
+    var body: some View {
+        HStack {
+            Text(month)
+                .font(.system(size: 16))
+                .foregroundStyle(.white)
+            
+            Spacer()
+            
+            Text("$\(String(format: "%.2f", expenseVM.calculateMonthlyTotal(for: expenseVM.expensesByMonth[month] ?? [])))")
+                .font(.system(size: 16))
+                .foregroundStyle(.white)
+        }
+    }
+}
+
+// Keep the existing ExpenseRowView as is
 struct ExpenseRowView: View {
     let expense: Expense
     
@@ -139,9 +297,13 @@ struct ExpenseRowView: View {
                     .font(.system(size: 16))
                     .foregroundStyle(.white)
                 
-                Text(expense.time)
-                    .font(.system(size: 14))
-                    .foregroundStyle(.gray)
+                HStack(spacing: 4) {
+                    Text(expense.date.formatted(.dateTime.day().month()))
+                    Text("•")
+                    Text(expense.time)
+                }
+                .font(.system(size: 14))
+                .foregroundStyle(.gray)
             }
             
             Spacer()
@@ -154,3 +316,4 @@ struct ExpenseRowView: View {
         .padding()
     }
 }
+

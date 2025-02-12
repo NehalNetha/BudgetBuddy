@@ -11,6 +11,8 @@ import Charts
 struct InsightMainView: View {
     @State private var selectedTab = 0
     @Namespace private var animation
+    @StateObject private var expenseVM = ExpenseViewModel()
+    @State private var expenses: [Expense] = []
     
     var body: some View {
         VStack(spacing: 0) {
@@ -47,20 +49,20 @@ struct InsightMainView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         // Spending Trends
-                        SpendingTrendsCard()
+                        SpendingTrendsCard(expenses: expenses)
                             .padding(.horizontal)
                         
                         // Existing Bar Chart
-                        BarChartView()
+                        BarChartView(expenses: expenses)
                             .padding(.horizontal)
-                        
+                            .frame(maxWidth: .infinity)
                         // Existing Pie Chart
-                        ExpenseProgressChart()
+                        ExpenseProgressChart(expenses: expenses)
                             .padding(.horizontal)
                         
                         // Budget vs Actual
-                        BudgetComparisonCard()
-                            .padding(.horizontal)
+                        BudgetComparisonCard(expenses: expenses)
+                            .padding(.horizontal)                 
                         
                         // Monthly Savings Track
                         SavingsProgressCard()
@@ -90,6 +92,14 @@ struct InsightMainView: View {
             .animation(.easeInOut(duration: 0.3), value: selectedTab)
         }
         .background(Color.black)
+        .padding(.bottom)
+        .task {
+           do {
+               expenses = try await expenseVM.fetchAllExpenses()
+           } catch {
+               print("Error fetching expenses: \(error)")
+           }
+        }
     }
 }
 

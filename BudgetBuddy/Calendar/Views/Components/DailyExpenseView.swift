@@ -11,6 +11,10 @@ struct DailyExpense: Identifiable {
 }
 
 struct DailyExpenseView: View {
+    // Add state for edit sheet
+    @State private var showEditExpense = false
+    @State private var selectedExpense: Expense?
+    
     let date: Date
     let dateFormatter: (Date, String) -> String
     @ObservedObject var expenseVM: ExpenseViewModel
@@ -70,22 +74,7 @@ struct DailyExpenseView: View {
             }
             .padding(.horizontal)
             
-            // Expense List
-            
-           
-//        VStack(spacing: 15) {
-//             if expenseVM.isLoading {
-//                 ProgressView()
-//             } else {
-//                 ForEach(expenseVM.dailyExpenses) { expense in
-//                     DailyExpenseRow(expense: expense)
-//                         .background(Color(hex: "191919"))
-//                         .cornerRadius(16)
-//                 }
-//             }
-//          }
-//          .padding(.horizontal)
-            
+
             List {
                 if expenseVM.isLoading {
                     ProgressView()
@@ -94,6 +83,11 @@ struct DailyExpenseView: View {
                 } else {
                     ForEach(expenseVM.dailyExpenses) { expense in
                         DailyExpenseRow(expense: expense)
+                            .onTapGesture {
+                                // Immediately show the sheet with the selected expense
+                                selectedExpense = expense
+                                showEditExpense = true
+                            }
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                 Button(role: .destructive) {
                                     Task {
@@ -146,6 +140,14 @@ struct DailyExpenseView: View {
         .sheet(isPresented: $showAddExpense) {
             AddExpenseCalendarView(expenseVM: expenseVM, selectedDate: date)
                 .presentationDetents([.medium])
+        }
+        .sheet(isPresented: $showEditExpense) {
+            if let expense = selectedExpense {
+                EditExpenseView(expenseVM: expenseVM, expense: expense, date: date)
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.visible)
+                    .interactiveDismissDisabled(false)
+            }
         }
     }
 }
@@ -200,6 +202,9 @@ struct DailyExpenseRow: View {
       
     }
 }
+
+// Add sheet presentation for editing
+
 
 // Helper function for dummy data
 func getDummyExpenses() -> [DailyExpense] {
