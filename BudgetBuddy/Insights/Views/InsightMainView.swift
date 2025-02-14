@@ -64,13 +64,16 @@ struct InsightMainView: View {
                         BudgetComparisonCard(expenses: expenses)
                             .padding(.horizontal)                 
                         
-                        // Monthly Savings Track
-                        SavingsProgressCard()
+//                        ExpenseForecastChart(expenses: expenses)
+//                            .padding(.horizontal)
+                        
+                        CategoryGrowthChart(expenses: expenses)
                             .padding(.horizontal)
                         
-                        // Recurring Expenses
-                        RecurringExpensesCard()
+                        DailyPatternChart(expenses: expenses)
                             .padding(.horizontal)
+                      
+                       
                     }
                     .padding(.top, 20)
                 }

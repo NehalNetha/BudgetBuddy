@@ -8,6 +8,13 @@ struct CalendarView: View {
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack {
+                Text("Daily Expenses")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
                         Button {
@@ -84,12 +91,12 @@ struct CalendarView: View {
                 }
                 
                 DailyExpenseView(
-                   date: calendarTaskViewModel.currentDate,
-                   dateFormatter: calendarTaskViewModel.extractDate,
-                   expenseVM: expenseVM
-               )
+                    date: calendarTaskViewModel.currentDate,
+                    dateFormatter: calendarTaskViewModel.extractDate,
+                    expenseVM: expenseVM
+                )
             }
-            .padding(.top, 50) // Add top padding
+          // Add top padding
             Spacer() // Push content to the top
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

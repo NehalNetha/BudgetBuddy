@@ -16,20 +16,23 @@ struct MainTabView: View {
                 .tabItem {
                     Label("Home", systemImage: "house.fill")
                 }
+            .environmentObject(authViewModel)
             
             CalendarView()
                 .tabItem {
-                    Label("Search", systemImage: "calendar")
+                    Label("Calendar", systemImage: "calendar")
                 }
             
             InsightMainView()
                 .tabItem {
-                    Label("Profile", systemImage: "lightbulb.min")
+                    Label("Insights", systemImage: "lightbulb.min")
                 }
             Settings()
                 .tabItem {
                     Label("Profile", systemImage: "person.crop.circle")
                 }
+                .environmentObject(authViewModel)
+
         }
         .tint(.green) // Set active tab color to green
     }

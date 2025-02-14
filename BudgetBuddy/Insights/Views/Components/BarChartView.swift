@@ -243,27 +243,30 @@ struct BarChartView: View {
             .padding(.horizontal)
             
             // Bar Chart
-            HStack(alignment: .bottom, spacing: 20) {
+            HStack(alignment: .bottom, spacing: 12) {
                 ForEach(data) { item in
                     VStack(spacing: 8) {
-                        // In the body:
-                        if selectedBar == item.day {
-                            Text("$\(item.value, specifier: "%.2f")")
-                                .font(.system(size: 12))
-                                .foregroundStyle(.white)
-                                .transition(.opacity)
-                                .padding(.vertical, 4)
-                                .padding(.horizontal, 8)
-                                .background(Color(hex: "1E1E1E"))
-                                .cornerRadius(4)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.5)
-                                .frame(minWidth: 60)
+                        // Reserve space for the popup even when not shown
+                        ZStack(alignment: .bottom) {
+                            if selectedBar == item.day {
+                                Text("$\(item.value, specifier: "%.2f")")
+                                    .font(.system(size: 12))
+                                    .foregroundStyle(.white)
+                                    .transition(.opacity)
+                                    .padding(.vertical, 4)
+                                    .padding(.horizontal, 8)
+                                    .background(Color(hex: "1E1E1E"))
+                                    .cornerRadius(4)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.5)
+                                    .frame(minWidth: 60)
+                            }
                         }
+                        .frame(height: 25) // Fixed height for popup area
                         
                         Rectangle()
                             .fill(getBarColor(for: item))
-                            .frame(width: 38, height: max(20, (item.value / maxValue) * 110))  // Modified height calculation
+                            .frame(width: 30, height: max(20, (item.value / maxValue) * 110))
                             .cornerRadius(6)
                             .onTapGesture {
                                 withAnimation(.easeInOut(duration: 0.2)) {
@@ -274,15 +277,18 @@ struct BarChartView: View {
                         Text(item.day)
                             .font(.system(size: 12))
                             .foregroundStyle(.gray)
+                            .fixedSize()
+                            .frame(width: 35)
                         
                         Text(item.dayNumber)
                             .font(.system(size: 12))
                             .foregroundStyle(.gray)
+                            .fixedSize()
                     }
                 }
             }
             .frame(height: 200)
-            .frame(minWidth: UIScreen.main.bounds.width - 40) 
+            .frame(maxWidth: .infinity) // Changed from minWidth to maxWidth
             .padding(.horizontal)
         }
         .padding(.vertical)

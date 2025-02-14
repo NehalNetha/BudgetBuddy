@@ -1,3 +1,4 @@
+
 //
 //  InsightCard.swift
 //  BudgetBuddy

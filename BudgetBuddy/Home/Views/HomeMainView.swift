@@ -25,6 +25,9 @@ struct CustomCorner: Shape {
 
 
 struct HomeMainView: View {
+    // Add this line
+    @EnvironmentObject var authViewModel: AuthViewModel
+    
     let data: [(category: String, value: Double)] = [
         ("Housing", 45),
         ("Category 2", 30),
@@ -100,14 +103,32 @@ struct HomeMainView: View {
 }
 
 extension HomeMainView {
+    // Update the Navbar function
     func Navbar() -> some View {
         HStack {
             HStack {
-                Image(systemName: "person.circle")
-                    .foregroundStyle(.white)
-                    .font(.system(size: 36))
+                // Update the image to use AsyncImage if profile image exists
+                if let profileUrl = authViewModel.currentUser?.profileImageUrl,
+                   let url = URL(string: profileUrl) {
+                    AsyncImage(url: url) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 36, height: 36)
+                            .clipShape(Circle())
+                    } placeholder: {
+                        Image(systemName: "person.circle")
+                            .foregroundStyle(.white)
+                            .font(.system(size: 36))
+                    }
+                } else {
+                    Image(systemName: "person.circle")
+                        .foregroundStyle(.white)
+                        .font(.system(size: 36))
+                }
+                
                 VStack(alignment: .leading) {
-                    Text("Hi Nehal")
+                    Text("Hi \(authViewModel.currentUser?.fullname ?? "User")")
                         .font(.system(size: 14))
                     Text("Monthly Budget")
                         .font(.system(size: 16))

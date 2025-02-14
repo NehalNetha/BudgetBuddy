@@ -138,9 +138,27 @@ extension AuthViewModel{
         return try await GoogleSignInCustom(crendential: credential)
     }
     
-    func GoogleSignInCustom(crendential: AuthCredential) async throws{
+    func GoogleSignInCustom(crendential: AuthCredential) async throws {
         let authDataResult = try await Auth.auth().signIn(with: crendential)
         self.userSession = authDataResult.user
+        
+        // Get profile image URL if available
+        if let photoURL = authDataResult.user.photoURL?.absoluteString {
+            let user = User(id: authDataResult.user.uid, 
+                           email: authDataResult.user.email ?? "", 
+                           profileImageUrl: photoURL)
+            try await saveUserToFirestore(user: authDataResult.user, profileImageUrl: photoURL)
+        } else {
+            try await saveUserToFirestore(user: authDataResult.user)
+        }
+    }
+
+    func saveUserToFirestore(user: FirebaseAuth.User, profileImageUrl: String? = nil) async throws {
+        let newUser = User(id: user.uid, 
+                          email: user.email ?? "", 
+                          profileImageUrl: profileImageUrl)
+        let encodedUser = try Firestore.Encoder().encode(newUser)
+        try await db.collection("users").document(user.uid).setData(encodedUser)
     }
 }
 

@@ -13,11 +13,14 @@ struct User: Identifiable, Codable{
     let id : String
     let email: String
     var fullname: String?
+    var profileImageUrl: String? 
     
-    init(id: String, email: String){
+    init(id: String, email: String,  profileImageUrl: String? = nil){
         self.id = id
         self.email = email
         self.fullname = User.extractName(email)
+        self.profileImageUrl = profileImageUrl
+
     }
     
     
