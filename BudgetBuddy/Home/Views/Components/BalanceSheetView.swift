@@ -6,6 +6,7 @@ struct BalanceSheetView: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject var expenseVM: ExpenseViewModel
     @StateObject private var budgetVM = BudgetSettingsViewModel()
+    @StateObject private var currencyManager = CurrencyManager.shared
     
     var body: some View {
         NavigationStack {
@@ -54,11 +55,12 @@ struct LoadingView: View {
 // Balance Header View
 struct BalanceHeaderView: View {
     @ObservedObject var budgetVM: BudgetSettingsViewModel
+    @StateObject private var currencyManager = CurrencyManager.shared
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             if let settings = budgetVM.budgetSettings {
-                Text("$\(String(format: "%.2f", settings.monthlyBudget))")
+                Text(currencyManager.formatAmount(settings.monthlyBudget))
                     .font(.system(size: 40, weight: .bold))
                     .foregroundStyle(.white)
             }
@@ -102,13 +104,14 @@ struct SpendingProgressView: View {
 // Spending Details View
 struct SpendingDetailsView: View {
     @ObservedObject var expenseVM: ExpenseViewModel
+    @StateObject private var currencyManager = CurrencyManager.shared
     let settings: BudgetSettings
     
     var body: some View {
         VStack(spacing: 12) {
             let monthlyTotal = expenseVM.calculateMonthlyTotal(for: expenseVM.expensesByMonth[Date().formatted(.dateTime.year().month())] ?? [])
             
-            Text("$\(String(format: "%.2f", monthlyTotal))")
+            Text(currencyManager.formatAmount(monthlyTotal))
                 .font(.system(size: 20, weight: .bold))
                 .foregroundStyle(.white)
             
@@ -163,6 +166,7 @@ struct CategoryLegendView: View {
 // Category Legend Item View
 struct CategoryLegendItemView: View {
     @ObservedObject var expenseVM: ExpenseViewModel
+    @StateObject private var currencyManager = CurrencyManager.shared
     let budget: CategoryBudget
     
     var body: some View {
@@ -178,7 +182,7 @@ struct CategoryLegendItemView: View {
                 .font(.caption)
                 .foregroundStyle(.gray)
             Spacer()
-            Text("$\(String(format: "%.2f", spent)) / $\(String(format: "%.2f", budget.amount))")
+            Text("\(currencyManager.formatAmount(spent)) / \(currencyManager.formatAmount(budget.amount))")
                 .font(.caption)
                 .foregroundStyle(.white)
         }
@@ -258,6 +262,7 @@ struct MonthlyExpenseSectionView: View {
 struct MonthHeaderView: View {
     let month: String
     @ObservedObject var expenseVM: ExpenseViewModel
+    @StateObject private var currencyManager = CurrencyManager.shared
     
     var body: some View {
         HStack {
@@ -267,7 +272,7 @@ struct MonthHeaderView: View {
             
             Spacer()
             
-            Text("$\(String(format: "%.2f", expenseVM.calculateMonthlyTotal(for: expenseVM.expensesByMonth[month] ?? [])))")
+            Text(currencyManager.formatAmount(expenseVM.calculateMonthlyTotal(for: expenseVM.expensesByMonth[month] ?? [])))
                 .font(.system(size: 16))
                 .foregroundStyle(.white)
         }
@@ -277,6 +282,7 @@ struct MonthHeaderView: View {
 // Keep the existing ExpenseRowView as is
 struct ExpenseRowView: View {
     let expense: Expense
+    @StateObject private var currencyManager = CurrencyManager.shared
     
     var body: some View {
         HStack(spacing: 16) {
@@ -309,7 +315,7 @@ struct ExpenseRowView: View {
             Spacer()
             
             // Amount
-            Text("$\(String(format: "%.2f", expense.amount))")
+            Text(currencyManager.formatAmount(expense.amount))
                 .font(.system(size: 16))
                 .foregroundStyle(.white)
         }

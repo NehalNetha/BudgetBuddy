@@ -234,4 +234,28 @@ class ExpenseViewModel: ObservableObject {
             return ("creditcard.fill", "6B7280")
         }
     }
+
+     func exportExpensesToCSV() async throws -> URL {
+        let expenses = try await fetchAllExpenses()
+        
+        // Create CSV string
+        var csvString = "Title,Amount,Category,Date,Time\n"
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        
+        for expense in expenses {
+            let row = "\"\(expense.title)\",\(expense.amount),\"\(expense.category)\",\"\(dateFormatter.string(from: expense.date))\",\"\(expense.time)\"\n"
+            csvString.append(row)
+        }
+        
+        // Get document directory URL
+        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let exportPath = documentsPath.appendingPathComponent("expenses.csv")
+        
+        // Write to file
+        try csvString.write(to: exportPath, atomically: true, encoding: .utf8)
+        
+        return exportPath
+    }
 }

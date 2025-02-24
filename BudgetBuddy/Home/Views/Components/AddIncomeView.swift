@@ -1,11 +1,14 @@
 import SwiftUI
-
+import FirebaseAuth
 struct AddIncomeView: View {
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject var incomeVM: IncomeViewModel
     @State private var incomeTitle = ""
     @State private var incomeAmount = ""
     @State private var incomeDate = Date()
-
+    @State private var showAlert = false
+    @State private var errorMessage = ""
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
@@ -62,10 +65,9 @@ struct AddIncomeView: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal)
 
-                // Add button
+                // Update Add button
                 Button {
-                    // Add income logic here
-                    dismiss()
+                    addIncome()
                 } label: {
                     Text("Add Income")
                         .font(.headline)
@@ -88,11 +90,43 @@ struct AddIncomeView: View {
             .clipShape(
                 CustomCorner(corners: [.topLeft, .topRight], radius: 30)
             )
+            .alert("Error", isPresented: $showAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(errorMessage)
+            }
         }
     }
-}
-
-#Preview {
-    AddIncomeView()
-        .preferredColorScheme(.dark)
+    
+    private func addIncome() {
+        guard let amount = Double(incomeAmount),
+              let userId = Auth.auth().currentUser?.uid else {
+            errorMessage = "Please enter a valid amount"
+            showAlert = true
+            return
+        }
+        
+        guard !incomeTitle.isEmpty else {
+            errorMessage = "Please enter a title"
+            showAlert = true
+            return
+        }
+        
+        let income = Income(
+            title: incomeTitle,
+            amount: amount,
+            date: incomeDate,
+            userId: userId
+        )
+        
+        Task {
+            do {
+                try await incomeVM.addIncome(income)
+                dismiss()
+            } catch {
+                errorMessage = error.localizedDescription
+                showAlert = true
+            }
+        }
+    }
 }

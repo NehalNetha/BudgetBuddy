@@ -32,6 +32,10 @@ struct MainTabView: View {
                     Label("Profile", systemImage: "person.crop.circle")
                 }
                 .environmentObject(authViewModel)
+            TestAIView()
+                .tabItem {
+                    Label("Profile", systemImage: "square.and.arrow.up")
+                }
 
         }
         .tint(.green) // Set active tab color to green

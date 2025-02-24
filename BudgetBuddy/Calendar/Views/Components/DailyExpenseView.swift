@@ -14,7 +14,8 @@ struct DailyExpenseView: View {
     // Add state for edit sheet
     @State private var showEditExpense = false
     @State private var selectedExpense: Expense?
-    
+    @StateObject private var currencyManager = CurrencyManager.shared
+
     let date: Date
     let dateFormatter: (Date, String) -> String
     @ObservedObject var expenseVM: ExpenseViewModel
@@ -48,7 +49,7 @@ struct DailyExpenseView: View {
                     Text("Total Spent")
                         .font(.system(size: 14))
                         .foregroundStyle(.gray)
-                    Text("$\(String(format: "%.2f", expenseVM.calculateDailyTotal()))")
+                    Text(currencyManager.formatAmount(expenseVM.calculateDailyTotal()))
                         .font(.system(size: 20))
                         .fontWeight(.semibold)
                         .foregroundStyle(.green)
@@ -154,7 +155,8 @@ struct DailyExpenseView: View {
 
 struct DailyExpenseRow: View {
     let expense: Expense
-    
+    @StateObject private var currencyManager = CurrencyManager.shared
+
     var body: some View {
         HStack(spacing: 15) {
             // Icon Container
@@ -173,33 +175,36 @@ struct DailyExpenseRow: View {
                 Text(expense.title)
                     .font(.system(size: 16, weight: .medium))
                     .foregroundStyle(.white)
+                    .lineLimit(1)
                 
                 HStack(spacing: 8) {
                     Text(expense.category)
-                        .font(.system(size: 13))
-                        .padding(.horizontal, 8)
+                        .font(.system(size: 12)) // Reduced font size
+                        .padding(.horizontal, 6) // Reduced horizontal padding
                         .padding(.vertical, 2)
                         .background(Color(hex: "1E1E1E"))
-                        .cornerRadius(8)
+                        .cornerRadius(6)
+                        .lineLimit(1)
                     
                     Text("•")
                         .foregroundStyle(.gray)
                     
                     Text(expense.time)
-                        .font(.system(size: 13))
+                        .font(.system(size: 12)) // Reduced font size
+                        .lineLimit(1)
                 }
                 .foregroundStyle(.gray)
             }
+            .frame(maxWidth: .infinity, alignment: .leading) // Ensure details take available space
             
-            Spacer()
-            
-            // Amount
-            Text("-$\(String(format: "%.2f", expense.amount))")
+            // Amount (with minimum spacing)
+            Text(currencyManager.formatAmount(expense.amount))
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
         }
         .padding()
-      
     }
 }
 

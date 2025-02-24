@@ -24,7 +24,7 @@ struct RecentExpensesView: View {
                 ForEach(expenseVM.recentExpenses) { expense in
                     ExpenseBlock(
                         title: expense.title,
-                        money: String(format: "$%.2f", expense.amount),
+                        money: expense.amount,
                         tag: expense.category,
                         color: expense.color
                     )
@@ -46,16 +46,17 @@ struct RecentExpensesView: View {
 
 struct ExpenseBlock: View {
     let title: String
-    let money: String
+    let money: Double
     let tag: String
     let color: String
-    
+    @StateObject private var currencyManager = CurrencyManager.shared
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.system(size: 18))
                 .fontWeight(.medium)
-            Text(money)
+            Text(currencyManager.formatAmount(money))
                 .font(.system(size: 14))
             Text(tag)
                 .font(.system(size: 10))

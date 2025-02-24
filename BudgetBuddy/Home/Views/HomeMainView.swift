@@ -27,7 +27,10 @@ struct CustomCorner: Shape {
 struct HomeMainView: View {
     // Add this line
     @EnvironmentObject var authViewModel: AuthViewModel
+    @StateObject private var currencyManager = CurrencyManager.shared
     
+    @StateObject private var incomeVM = IncomeViewModel()
+    @State private var showIncomeHistory = false
     let data: [(category: String, value: Double)] = [
         ("Housing", 45),
         ("Category 2", 30),
@@ -87,7 +90,7 @@ struct HomeMainView: View {
             .ignoresSafeArea(.all)
             
             .sheet(isPresented: $showAddIncome) {
-                AddIncomeView()
+                AddIncomeView(incomeVM: incomeVM)
                     .presentationDetents([.medium])
             }
             .sheet(isPresented: $showAddExpense){
@@ -168,7 +171,7 @@ extension HomeMainView {
                 Text("Total Expenses")
                     .foregroundStyle(.white)
                     .font(.system(size: 16))
-                Text("$1000.23")
+                  Text(currencyManager.formatAmount(1000.23))
                     .foregroundStyle(.white)
                     .font(.system(size: 24))
                     .fontWeight(.semibold)
@@ -193,7 +196,7 @@ extension HomeMainView {
 
     func BudgetLeft() -> some View {
         HStack {
-            Text("32$ left")
+             Text(currencyManager.formatAmount(32))
                 .foregroundStyle(Color(hex: "CDCBCB"))
                 .font(.system(size: 12))
                 .padding(.vertical, 4)
@@ -209,51 +212,64 @@ extension HomeMainView {
         }
         .padding(.horizontal)
     }
-
     
-    
-    
-    
-        
     func HorizontalIncomeSection() -> some View {
-       
-            VStack(alignment: .leading) {
+        VStack(alignment: .leading) {
+            HStack {
                 Text("Income")
                     .foregroundStyle(.white)
                     .font(.title2)
                     .fontWeight(.bold)
-                    .padding(.leading)
-
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 15) {
-                        Button {
-                            // TODO: Implement add income action
-                            showAddIncome = true
-                        } label: {
-                            VStack {
-                                Image(systemName: "plus")
-                                    .font(.title2)
-                                Text("Add New")
-                                    .font(.caption)
-                            }
-                            .foregroundColor(.green)
-                            .padding()
-                            .frame(width: 100, height: 100)
-                            .background(RoundedRectangle(cornerRadius: 16).fill(Color.gray.opacity(0.2)))
-                        }
-
-                      
-                        HorizontalIncomeItemView(icon: "dollarsign.circle.fill", title: "Salary", amount: "$1000", iconColor: .blue)
-                        HorizontalIncomeItemView(icon: "gift.fill", title: "Bonus", amount: "$500", iconColor: .orange)
-                      
-                    }
-                    .padding()
+                
+                Spacer()
+                NavigationLink {
+                   IncomeHistoryView(incomeVM: incomeVM)
+                } label: {
+                   Image(systemName: "arrow.right.circle.fill")
+                       .foregroundStyle(.green)
+                       .font(.title2)
                 }
             }
+            .padding(.horizontal)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 15) {
+                    Button {
+                        showAddIncome = true
+                    } label: {
+                        VStack {
+                            Image(systemName: "plus")
+                                .font(.title2)
+                            Text("Add New")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.green)
+                        .padding()
+                        .frame(width: 100, height: 100)
+                        .background(RoundedRectangle(cornerRadius: 16).fill(Color.gray.opacity(0.2)))
+                    }
+
+                    ForEach(incomeVM.incomes.prefix(3)) { income in
+                        HorizontalIncomeItemView(
+                            icon: "dollarsign.circle.fill",
+                            title: income.title,
+                            amount: currencyManager.formatAmount(income.amount),
+                            iconColor: .green
+                        )
+                    }
+                }
+                .padding()
+            }
         }
+        .task {
+            await incomeVM.fetchIncomes()
+        }
+        .sheet(isPresented: $showIncomeHistory) {
+            IncomeHistoryView(incomeVM: incomeVM)
+        }
+    }
 
-}
+    
+    
 
-#Preview {
-    HomeMainView()
 }

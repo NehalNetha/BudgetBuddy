@@ -14,7 +14,8 @@ struct ExpenseProgressChart: View {
     @State private var showDetails = false
     @State private var selectedPeriod: TimePeriod = .week
     @State private var showBreakdown = false
-    
+    @StateObject private var currencyManager = CurrencyManager.shared
+
     // Remove the hardcoded categories array
     
     var filteredExpenses: [Expense] {
@@ -144,7 +145,7 @@ struct ExpenseProgressChart: View {
                                 
                                 Spacer()
                                 
-                                Text("$\(String(format: "%.2f", category.amount))")
+                                Text(currencyManager.formatAmount(category.amount))
                                     .font(.system(size: 14))
                                     .foregroundStyle(.white)
                             }
@@ -210,11 +211,12 @@ private struct CategorySegments: View {
 private struct CenterDisplay: View {
     let selectedCategory: ExpenseCategory?
     let totalSpend: Double
-    
+    @StateObject private var currencyManager = CurrencyManager.shared
+
     var body: some View {
         VStack(spacing: 4) {
             if let selected = selectedCategory {
-                Text("$\(String(format: "%.2f", selected.amount))")
+                Text(currencyManager.formatAmount(selected.amount))
                     .font(.system(size: 24, weight: .bold))
                     .foregroundStyle(.white)
                 
@@ -227,7 +229,7 @@ private struct CenterDisplay: View {
                         .foregroundStyle(.gray)
                 }
             } else {
-                Text("$\(String(format: "%.2f", totalSpend))")
+                Text(currencyManager.formatAmount(totalSpend))
                     .font(.system(size: 24, weight: .bold))
                     .foregroundStyle(.white)
                 Text("Total Spend")

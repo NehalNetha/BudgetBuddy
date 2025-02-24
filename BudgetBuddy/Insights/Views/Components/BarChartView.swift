@@ -19,6 +19,7 @@ struct BarChartView: View {
     @State private var selectedBar: String? = nil
     @State private var currentWeekOffset: Int = 0  // Add this for week navigation
     let expenses: [Expense]
+    @StateObject private var currencyManager = CurrencyManager.shared
 
     var data: [DailyData] {
         let calendar = Calendar.current
@@ -249,7 +250,7 @@ struct BarChartView: View {
                         // Reserve space for the popup even when not shown
                         ZStack(alignment: .bottom) {
                             if selectedBar == item.day {
-                                Text("$\(item.value, specifier: "%.2f")")
+                                Text(currencyManager.formatAmount(item.value))
                                     .font(.system(size: 12))
                                     .foregroundStyle(.white)
                                     .transition(.opacity)
@@ -266,7 +267,7 @@ struct BarChartView: View {
                         
                         Rectangle()
                             .fill(getBarColor(for: item))
-                            .frame(width: 30, height: max(20, (item.value / maxValue) * 110))
+                            .frame(width: 30, height: max(20, (item.value / maxValue) * 140))
                             .cornerRadius(6)
                             .onTapGesture {
                                 withAnimation(.easeInOut(duration: 0.2)) {

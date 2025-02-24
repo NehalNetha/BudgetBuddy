@@ -2,27 +2,48 @@
 import SwiftUI
 
 struct Settings: View {
+    // Add AuthViewModel
+    @EnvironmentObject var authViewModel : AuthViewModel
     @State private var isDarkMode = true
     @State private var showBudgetSettings = false
     @State private var showNotificationSettings = false
     @State private var showCurrencySettings = false
     @State private var showAbout = false
+    @StateObject private var expenseVM = ExpenseViewModel()
+    @State private var showingExportAlert = false
+    @State private var exportError: Error?
+    @StateObject private var currencyManager = CurrencyManager.shared
     
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    // Profile Section
+                    // Updated Profile Section
                     VStack(spacing: 15) {
-                        Image(systemName: "person.circle.fill")
-                            .font(.system(size: 80))
-                            .foregroundStyle(.white)
+                        if let imageUrl = authViewModel.currentUser?.profileImageUrl,
+                           let url = URL(string: imageUrl) {
+                            AsyncImage(url: url) { image in
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 80, height: 80)
+                                    .clipShape(Circle())
+                            } placeholder: {
+                                Image(systemName: "person.circle.fill")
+                                    .font(.system(size: 80))
+                                    .foregroundStyle(.white)
+                            }
+                        } else {
+                            Image(systemName: "person.circle.fill")
+                                .font(.system(size: 80))
+                                .foregroundStyle(.white)
+                        }
                         
-                        Text("Nehal Netha")
+                        Text(authViewModel.currentUser?.fullname ?? "User")
                             .font(.title2)
                             .foregroundStyle(.white)
                         
-                        Text("nehalnetha@gmail.com")
+                        Text(authViewModel.currentUser?.email ?? "")
                             .font(.subheadline)
                             .foregroundStyle(.gray)
                     }
@@ -43,11 +64,20 @@ struct Settings: View {
                         SettingsRow(icon: "bell.fill", title: "Notifications", iconColor: .blue)
                     }
                     
-                    // Currency
+                    // Currency Button
                     Button {
                         showCurrencySettings.toggle()
                     } label: {
-                        SettingsRow(icon: "dollarsign.circle", title: "Currency", iconColor: .orange)
+                        SettingsRow(icon: "dollarsign.circle", title: "Currency (\(currencyManager.selectedCurrency))", iconColor: .orange)
+                    }
+                    .sheet(isPresented: $showCurrencySettings) {
+                        CurrencySettingsView()
+                    }
+                    
+                    Button {
+                        exportData()
+                    } label: {
+                        SettingsRow(icon: "square.and.arrow.down", title: "Export Expenses", iconColor: .green)
                     }
                     
                     // App Settings Section
@@ -69,9 +99,9 @@ struct Settings: View {
                         .padding(.top, 10)
                     }
                     
-                    // Sign Out Button
+                    // Update Sign Out Button
                     Button {
-                        // Sign out functionality placeholder
+                        authViewModel.signOut()
                     } label: {
                         Text("Sign Out")
                             .foregroundStyle(.red)
@@ -88,6 +118,38 @@ struct Settings: View {
             .navigationBarTitleDisplayMode(.large)
         }
         .preferredColorScheme(.dark)
+        .task {
+            await authViewModel.fetchUser()
+        }
+         .alert("Export Error", isPresented: $showingExportAlert, presenting: exportError) { _ in
+            Button("OK", role: .cancel) { }
+        } message: { error in
+            Text(error.localizedDescription)
+        }
+    }
+
+    private func exportData() {
+        Task {
+            do {
+                let fileURL = try await expenseVM.exportExpensesToCSV()
+                
+                let activityVC = UIActivityViewController(
+                    activityItems: [fileURL],
+                    applicationActivities: nil
+                )
+                
+                // Present the share sheet
+                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let window = windowScene.windows.first,
+                   let rootVC = window.rootViewController {
+                    activityVC.popoverPresentationController?.sourceView = rootVC.view
+                    rootVC.present(activityVC, animated: true)
+                }
+            } catch {
+                exportError = error
+                showingExportAlert = true
+            }
+        }
     }
 }
 
@@ -122,7 +184,7 @@ struct SettingsRow: View {
 // Currency Settings Sheet
 struct CurrencySettingsView: View {
     @Environment(\.dismiss) var dismiss
-    @State private var selectedCurrency = "USD"
+    @StateObject private var currencyManager = CurrencyManager.shared
     let currencies = ["USD", "EUR", "GBP", "JPY", "INR"]
     
     var body: some View {
@@ -130,13 +192,13 @@ struct CurrencySettingsView: View {
             List {
                 ForEach(currencies, id: \.self) { currency in
                     Button {
-                        selectedCurrency = currency
+                        currencyManager.selectedCurrency = currency
                     } label: {
                         HStack {
                             Text(currency)
                                 .foregroundStyle(.white)
                             Spacer()
-                            if currency == selectedCurrency {
+                            if currency == currencyManager.selectedCurrency {
                                 Image(systemName: "checkmark")
                                     .foregroundStyle(Color(hex: "037D4F"))
                             }

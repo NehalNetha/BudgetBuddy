@@ -19,8 +19,9 @@
 		217D87562D5B8B36008B96B8 /* BudgetSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D87552D5B8B36008B96B8 /* BudgetSettings.swift */; };
 		217D87582D5B8DED008B96B8 /* BudgetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D87572D5B8DED008B96B8 /* BudgetViewModel.swift */; };
 		217D875A2D5B8E0E008B96B8 /* BudgetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217D87592D5B8E0E008B96B8 /* BudgetModel.swift */; };
+		21B265262D686EE100A827E1 /* onBoardingViewTwo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B265252D686EE100A827E1 /* onBoardingViewTwo.swift */; };
+		21B2652A2D6996DF00A827E1 /* InsightViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B265292D6996DF00A827E1 /* InsightViewModel.swift */; };
 		21B2BF5E2D32CE8E001C40AF /* BudgetBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B2BF5D2D32CE8E001C40AF /* BudgetBuddyApp.swift */; };
-		21B2BF602D32CE8E001C40AF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B2BF5F2D32CE8E001C40AF /* ContentView.swift */; };
 		21B2BF622D32CE91001C40AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21B2BF612D32CE91001C40AF /* Assets.xcassets */; };
 		21B2BF652D32CE91001C40AF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21B2BF642D32CE91001C40AF /* Preview Assets.xcassets */; };
 		21B2BF6E2D32F885001C40AF /* HomeMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B2BF6D2D32F885001C40AF /* HomeMainView.swift */; };
@@ -28,7 +29,9 @@
 		21B2BF742D33BCD2001C40AF /* HexColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B2BF732D33BCD2001C40AF /* HexColor.swift */; };
 		21B2BF772D33C35D001C40AF /* IncomeBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B2BF762D33C35D001C40AF /* IncomeBlock.swift */; };
 		21B2BF792D33C815001C40AF /* InsightBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B2BF782D33C815001C40AF /* InsightBlock.swift */; };
+		21C783B32D6CEF610063D387 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C783B22D6CEF610063D387 /* ContentView.swift */; };
 		21C86ECA2D5F6B51005D8BFC /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C86EC92D5F6B51005D8BFC /* Settings.swift */; };
+		21C86ECC2D5F76C7005D8BFC /* CurrencyManagar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C86ECB2D5F76C7005D8BFC /* CurrencyManagar.swift */; };
 		21D956442D35193F00E1939D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 21D956432D35193F00E1939D /* FirebaseAuth */; };
 		21D956462D35193F00E1939D /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 21D956452D35193F00E1939D /* FirebaseAuthCombine-Community */; };
 		21D956482D35193F00E1939D /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 21D956472D35193F00E1939D /* FirebaseCore */; };
@@ -61,6 +64,12 @@
 		21EE37792D593E0A00732059 /* AddExpenseCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE37782D593E0A00732059 /* AddExpenseCalendarView.swift */; };
 		21EE377B2D59581300732059 /* RecentExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE377A2D59581300732059 /* RecentExpensesView.swift */; };
 		21F99FFD2D59E71B00E3FAEC /* BalanceSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F99FFC2D59E71B00E3FAEC /* BalanceSheetView.swift */; };
+		21FF7A8D2D5F8EE40091BBC2 /* Income.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FF7A8C2D5F8EE40091BBC2 /* Income.swift */; };
+		21FF7A8F2D5F8EF70091BBC2 /* IncomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FF7A8E2D5F8EF70091BBC2 /* IncomeViewModel.swift */; };
+		21FF7A912D5F8F1E0091BBC2 /* IncomeHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FF7A902D5F8F1E0091BBC2 /* IncomeHistoryView.swift */; };
+		21FF7A942D5F9AE90091BBC2 /* VertexServiceGemini.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FF7A932D5F9AE90091BBC2 /* VertexServiceGemini.swift */; };
+		21FF7A962D5F9E700091BBC2 /* Chatthing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FF7A952D5F9E700091BBC2 /* Chatthing.swift */; };
+		21FF7A9A2D609C1D0091BBC2 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FF7A992D609C1D0091BBC2 /* OnboardingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,9 +85,10 @@
 		217D87552D5B8B36008B96B8 /* BudgetSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetSettings.swift; sourceTree = "<group>"; };
 		217D87572D5B8DED008B96B8 /* BudgetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetViewModel.swift; sourceTree = "<group>"; };
 		217D87592D5B8E0E008B96B8 /* BudgetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetModel.swift; sourceTree = "<group>"; };
+		21B265252D686EE100A827E1 /* onBoardingViewTwo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = onBoardingViewTwo.swift; sourceTree = "<group>"; };
+		21B265292D6996DF00A827E1 /* InsightViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightViewModel.swift; sourceTree = "<group>"; };
 		21B2BF5A2D32CE8E001C40AF /* BudgetBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BudgetBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21B2BF5D2D32CE8E001C40AF /* BudgetBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetBuddyApp.swift; sourceTree = "<group>"; };
-		21B2BF5F2D32CE8E001C40AF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		21B2BF612D32CE91001C40AF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21B2BF642D32CE91001C40AF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		21B2BF6D2D32F885001C40AF /* HomeMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMainView.swift; sourceTree = "<group>"; };
@@ -86,7 +96,9 @@
 		21B2BF732D33BCD2001C40AF /* HexColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexColor.swift; sourceTree = "<group>"; };
 		21B2BF762D33C35D001C40AF /* IncomeBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeBlock.swift; sourceTree = "<group>"; };
 		21B2BF782D33C815001C40AF /* InsightBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightBlock.swift; sourceTree = "<group>"; };
+		21C783B22D6CEF610063D387 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		21C86EC92D5F6B51005D8BFC /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		21C86ECB2D5F76C7005D8BFC /* CurrencyManagar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyManagar.swift; sourceTree = "<group>"; };
 		21D9565B2D351A3300E1939D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		21EE37482D58AB9800732059 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		21EE374B2D58AC6A00732059 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
@@ -106,6 +118,12 @@
 		21EE37782D593E0A00732059 /* AddExpenseCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseCalendarView.swift; sourceTree = "<group>"; };
 		21EE377A2D59581300732059 /* RecentExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentExpensesView.swift; sourceTree = "<group>"; };
 		21F99FFC2D59E71B00E3FAEC /* BalanceSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceSheetView.swift; sourceTree = "<group>"; };
+		21FF7A8C2D5F8EE40091BBC2 /* Income.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Income.swift; sourceTree = "<group>"; };
+		21FF7A8E2D5F8EF70091BBC2 /* IncomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeViewModel.swift; sourceTree = "<group>"; };
+		21FF7A902D5F8F1E0091BBC2 /* IncomeHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeHistoryView.swift; sourceTree = "<group>"; };
+		21FF7A932D5F9AE90091BBC2 /* VertexServiceGemini.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VertexServiceGemini.swift; sourceTree = "<group>"; };
+		21FF7A952D5F9E700091BBC2 /* Chatthing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chatthing.swift; sourceTree = "<group>"; };
+		21FF7A992D609C1D0091BBC2 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +194,7 @@
 			children = (
 				217D87572D5B8DED008B96B8 /* BudgetViewModel.swift */,
 				217D87592D5B8E0E008B96B8 /* BudgetModel.swift */,
+				21C86ECB2D5F76C7005D8BFC /* CurrencyManagar.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -186,6 +205,14 @@
 				217D87552D5B8B36008B96B8 /* BudgetSettings.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		21B265282D6996C300A827E1 /* InsightViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				21B265292D6996DF00A827E1 /* InsightViewModel.swift */,
+			);
+			path = InsightViewModel;
 			sourceTree = "<group>";
 		};
 		21B2BF512D32CE8E001C40AF = {
@@ -207,6 +234,8 @@
 		21B2BF5C2D32CE8E001C40AF /* BudgetBuddy */ = {
 			isa = PBXGroup;
 			children = (
+				21FF7A972D609C020091BBC2 /* Onboarding */,
+				21FF7A922D5F9AD40091BBC2 /* GeminiAI */,
 				217D87522D5B8B18008B96B8 /* Settings */,
 				21EE375E2D58FBE000732059 /* Insights */,
 				21EE37582D58B5D600732059 /* Utilities */,
@@ -216,7 +245,7 @@
 				21B2BF6F2D33AE9E001C40AF /* Tab */,
 				21B2BF6B2D32F860001C40AF /* Home */,
 				21B2BF5D2D32CE8E001C40AF /* BudgetBuddyApp.swift */,
-				21B2BF5F2D32CE8E001C40AF /* ContentView.swift */,
+				21C783B22D6CEF610063D387 /* ContentView.swift */,
 				21D9565B2D351A3300E1939D /* GoogleService-Info.plist */,
 				21EE37762D5938B800732059 /* Info.plist */,
 				21B2BF612D32CE91001C40AF /* Assets.xcassets */,
@@ -277,6 +306,7 @@
 				217491932D3EA53900AD25F8 /* AddIncomeView.swift */,
 				21EE377A2D59581300732059 /* RecentExpensesView.swift */,
 				21F99FFC2D59E71B00E3FAEC /* BalanceSheetView.swift */,
+				21FF7A902D5F8F1E0091BBC2 /* IncomeHistoryView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -334,6 +364,7 @@
 		21EE375E2D58FBE000732059 /* Insights */ = {
 			isa = PBXGroup;
 			children = (
+				21B265282D6996C300A827E1 /* InsightViewModel */,
 				21EE375F2D58FBE700732059 /* Views */,
 			);
 			path = Insights;
@@ -377,6 +408,7 @@
 			isa = PBXGroup;
 			children = (
 				21EE37742D59275F00732059 /* ExpenseViewModel.swift */,
+				21FF7A8E2D5F8EF70091BBC2 /* IncomeViewModel.swift */,
 			);
 			path = ExpenseViewModel;
 			sourceTree = "<group>";
@@ -385,8 +417,35 @@
 			isa = PBXGroup;
 			children = (
 				21EE37722D59272700732059 /* ExpenseModel.swift */,
+				21FF7A8C2D5F8EE40091BBC2 /* Income.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		21FF7A922D5F9AD40091BBC2 /* GeminiAI */ = {
+			isa = PBXGroup;
+			children = (
+				21FF7A932D5F9AE90091BBC2 /* VertexServiceGemini.swift */,
+				21FF7A952D5F9E700091BBC2 /* Chatthing.swift */,
+			);
+			path = GeminiAI;
+			sourceTree = "<group>";
+		};
+		21FF7A972D609C020091BBC2 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				21FF7A982D609C070091BBC2 /* Views */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		21FF7A982D609C070091BBC2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				21FF7A992D609C1D0091BBC2 /* OnboardingView.swift */,
+				21B265252D686EE100A827E1 /* onBoardingViewTwo.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -481,6 +540,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				21B2BF772D33C35D001C40AF /* IncomeBlock.swift in Sources */,
+				21B2652A2D6996DF00A827E1 /* InsightViewModel.swift in Sources */,
+				21FF7A8D2D5F8EE40091BBC2 /* Income.swift in Sources */,
+				21FF7A962D5F9E700091BBC2 /* Chatthing.swift in Sources */,
 				21EE37662D58FD1F00732059 /* BarChartView.swift in Sources */,
 				21EE37642D58FCB600732059 /* InsightMainView.swift in Sources */,
 				21F99FFD2D59E71B00E3FAEC /* BalanceSheetView.swift in Sources */,
@@ -490,18 +552,20 @@
 				21EE37792D593E0A00732059 /* AddExpenseCalendarView.swift in Sources */,
 				21EE374C2D58AC6A00732059 /* CalendarViewModel.swift in Sources */,
 				21EE37732D59272700732059 /* ExpenseModel.swift in Sources */,
-				21B2BF602D32CE8E001C40AF /* ContentView.swift in Sources */,
 				21EE376F2D59186A00732059 /* DailyExpenseView.swift in Sources */,
 				217491922D3EA24500AD25F8 /* AddExpenseView.swift in Sources */,
 				21EE377B2D59581300732059 /* RecentExpensesView.swift in Sources */,
 				213F52442D5CF77700DC05DB /* DailyPatternChart.swift.swift in Sources */,
+				21FF7A942D5F9AE90091BBC2 /* VertexServiceGemini.swift in Sources */,
 				213F52422D5CF76E00DC05DB /* CategoryGrowthChart.swift in Sources */,
 				21EE37682D5900A400732059 /* ExpenseProgressChart.swift in Sources */,
 				21C86ECA2D5F6B51005D8BFC /* Settings.swift in Sources */,
+				21FF7A9A2D609C1D0091BBC2 /* OnboardingView.swift in Sources */,
 				217D87582D5B8DED008B96B8 /* BudgetViewModel.swift in Sources */,
 				21EE375B2D58B5EE00732059 /* Utilities.swift in Sources */,
 				21B2BF742D33BCD2001C40AF /* HexColor.swift in Sources */,
 				21EE37752D59275F00732059 /* ExpenseViewModel.swift in Sources */,
+				21C86ECC2D5F76C7005D8BFC /* CurrencyManagar.swift in Sources */,
 				21EE375D2D58B76A00732059 /* InputView.swift in Sources */,
 				213F523E2D5BD2C000DC05DB /* EditExpenseView.swift in Sources */,
 				21B2BF5E2D32CE8E001C40AF /* BudgetBuddyApp.swift in Sources */,
@@ -509,9 +573,13 @@
 				21EE376C2D5914D000732059 /* InsightCard.swift in Sources */,
 				21EE37522D58B2E500732059 /* User.swift in Sources */,
 				213F52462D5CFD4400DC05DB /* CategoryGrothLineChart.swift in Sources */,
+				21B265262D686EE100A827E1 /* onBoardingViewTwo.swift in Sources */,
+				21FF7A8F2D5F8EF70091BBC2 /* IncomeViewModel.swift in Sources */,
 				217491982D3EA72400AD25F8 /* SignUpView.swift in Sources */,
 				217491942D3EA53900AD25F8 /* AddIncomeView.swift in Sources */,
+				21FF7A912D5F8F1E0091BBC2 /* IncomeHistoryView.swift in Sources */,
 				21EE374F2D58B2AC00732059 /* AuthViewModel.swift in Sources */,
+				21C783B32D6CEF610063D387 /* ContentView.swift in Sources */,
 				2174919A2D3EA74E00AD25F8 /* LoginView.swift in Sources */,
 				217D875A2D5B8E0E008B96B8 /* BudgetModel.swift in Sources */,
 				21B2BF792D33C815001C40AF /* InsightBlock.swift in Sources */,

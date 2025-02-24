@@ -11,7 +11,7 @@ struct MonthlySpending: Identifiable {
 
 struct SpendingTrendsCard: View {
     let expenses: [Expense]
-    @State private var timeRange: TimeRange = .sixMonths
+    @State private var timeRange: TimeRange = .oneMonth
     
     enum TimeRange {
         case oneMonth, sixMonths
@@ -130,6 +130,8 @@ struct SpendingTrendsCard: View {
 struct BudgetComparisonCard: View {
     @StateObject private var budgetVM = BudgetSettingsViewModel()
     let expenses: [Expense]
+    @StateObject private var currencyManager = CurrencyManager.shared
+
     
     private var categoryComparisons: [(category: String, spent: Double, budget: Double)] {
         guard let settings = budgetVM.budgetSettings else { return [] }
@@ -163,7 +165,8 @@ struct BudgetComparisonCard: View {
                             Text(comparison.category)
                                 .foregroundStyle(.white)
                             Spacer()
-                            Text("$\(String(format: "%.2f", comparison.spent)) / $\(String(format: "%.2f", comparison.budget))")
+                            Text("\(currencyManager.formatAmount(comparison.spent)) / \(currencyManager.formatAmount(comparison.budget))")
+                            
                                 .font(.system(size: 14))
                                 .foregroundStyle(.gray)
                         }
